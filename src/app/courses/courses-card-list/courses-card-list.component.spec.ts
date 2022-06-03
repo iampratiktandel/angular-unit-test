@@ -14,6 +14,7 @@ import { setupCourses } from '../common/setup-test-data';
 describe('CoursesCardListComponent', () => {
   let component: CoursesCardListComponent;
   let fixture: ComponentFixture<CoursesCardListComponent>;
+  let el: DebugElement;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -23,6 +24,7 @@ describe('CoursesCardListComponent', () => {
       .then(() => {
         fixture = TestBed.createComponent(CoursesCardListComponent);
         component = fixture.componentInstance;
+        el = fixture.debugElement;
       });
   }));
 
@@ -32,16 +34,28 @@ describe('CoursesCardListComponent', () => {
 
 
   it("should display the course list", () => {
+    component.courses = setupCourses();
+    fixture.detectChanges();
 
-    pending();
-
+    const cards = el.queryAll(By.css('.course-card'));
+    console.log(el.nativeElement.outerHtml);
+    expect(cards).withContext('Could not find cards').toBeTruthy();
+    expect(cards.length).withContext('Unexpected number of courses').toBe(12);
   });
 
 
   it("should display the first course", () => {
+    component.courses = setupCourses();
+    fixture.detectChanges();
 
-    pending();
+    const course = component.courses[0];
+    const card = el.query(By.css('.course-card:first-child'));
+    const title = el.query(By.css('mat-card-title'));
+    const image = card.query(By.css('img'));
 
+    expect(card).toBeTruthy('Could not find course card');
+    expect(title.nativeElement.textContent).toBe(course.titles.description);
+    expect(image.nativeElement.src).toBe(course.iconUrl);
   });
 
 
