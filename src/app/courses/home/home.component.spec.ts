@@ -24,9 +24,9 @@ describe('HomeComponent', () => {
   let coursesService: any;
 
   const beginnerCourses = setupCourses()
-  .filter(course => course.category === 'BEGINNER');
+    .filter(course => course.category === 'BEGINNER');
   const advancedCourses = setupCourses()
-  .filter(course => course.category === 'ADVANCED');
+    .filter(course => course.category === 'ADVANCED');
 
   beforeEach(waitForAsync(() => {
     const coursesServiceSpy = jasmine.createSpyObj('CoursesService', ['findAllCourses']);
@@ -89,11 +89,21 @@ describe('HomeComponent', () => {
   });
 
 
-  it("should display advanced courses when tab clicked", () => {
+  it("should display advanced courses when tab clicked", (done: DoneFn) => {
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+    fixture.detectChanges();
 
-    pending();
+    const tabs = el.queryAll(By.css('.mat-tab-label'));
+    click(tabs[1]);
+    fixture.detectChanges();
 
-  });
+    setTimeout(() => {
+      const cardTitles = el.queryAll(By.css('.mat-card-title'));
+      expect(cardTitles.length).toBeGreaterThan(0);
+      expect(cardTitles[0].nativeElement.textContent).toContain('Angular Testing Course');
+      done();
+    }, 500);
+  })
 
 });
 
